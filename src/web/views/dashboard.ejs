@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - RestoreBot</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">🛡️ RestoreBot</div>
+    <div class="nav-user">
+      <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="" class="avatar">
+      <span><%= user.username %></span>
+      <a href="/auth/logout" class="btn-logout">Déconnexion</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Mes serveurs</h1>
+    <p class="subtitle">Sélectionnez un serveur à configurer</p>
+
+    <div class="server-grid">
+      <% guilds.forEach(guild => { %>
+        <a href="/dashboard/server/<%= guild.id %>" class="server-card">
+          <img src="<%= guild.icon ? 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png' %>" alt="" class="server-icon">
+          <div class="server-info">
+            <h3><%= guild.name %></h3>
+            <% if (serverConfigs[guild.id]) { %>
+              <span class="badge badge-active">Configuré</span>
+            <% } else { %>
+              <span class="badge badge-inactive">Non configuré</span>
+            <% } %>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</body>
+</html>

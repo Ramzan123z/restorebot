@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= guild.name %> - RestoreBot</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand"><a href="/dashboard">🛡️ RestoreBot</a> / <%= guild.name %></div>
+    <div class="nav-user">
+      <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="" class="avatar">
+      <span><%= user.username %></span>
+      <a href="/auth/logout" class="btn-logout">Déconnexion</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="server-header">
+      <img src="<%= guild.icon ? 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.png' : 'https://cdn.discordapp.com/embed/avatars/0.png' %>" alt="" class="server-icon-lg">
+      <div>
+        <h1><%= guild.name %></h1>
+        <% if (server) { %>
+          <span class="badge badge-active">Configuré</span>
+        <% } else { %>
+          <span class="badge badge-inactive">Non configuré</span>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (!server) { %>
+      <div class="card">
+        <h2>Configuration rapide</h2>
+        <p>Configurez ce serveur en utilisant la commande slash Discord :</p>
+        <code class="command">/setup #salon-de-vérification @rôle-vérifié</code>
+        <p class="hint">Puis envoyez <code>/verify</code> pour publier le message de vérification.</p>
+      </div>
+    <% } else { %>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value"><%= members.length %></div>
+          <div class="stat-label">Membres sauvegardés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><%= blacklist.length %></div>
+          <div class="stat-label">Blacklistés</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value"><%= logs.length %></div>
+          <div class="stat-label">Vérifications</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Liens</h2>
+        <div class="link-grid">
+          <div class="link-item">
+            <strong>Lien de vérification</strong>
+            <a href="<%= config.web.url %>/verify/<%= guild.id %>" target="_blank"><%= config.web.url %>/verify/<%= guild.id %></a>
+          </div>
+          <div class="link-item">
+            <strong>Commandes Discord</strong>
+            <code>/setup</code> · <code>/verify</code> · <code>/backup</code> · <code>/restore</code> · <code>/settings</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Dernières vérifications</h2>
+        <% if (logs.length === 0) { %>
+          <p class="empty">Aucune vérification pour le moment.</p>
+        <% } else { %>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Utilisateur</th>
+                <th>ID</th>
+                <th>IP</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% logs.forEach(log => { %>
+                <tr>
+                  <td><%= log.username %></td>
+                  <td><code><%= log.user_id %></code></td>
+                  <td><code><%= log.ip %></code></td>
+                  <td><%= new Date(log.created_at * 1000).toLocaleString('fr-FR') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+
+      <% if (blacklist.length > 0) { %>
+        <div class="card">
+          <h2>Blacklist</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Raison</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% blacklist.forEach(bl => { %>
+                <tr>
+                  <td><code><%= bl.user_id || bl.ip %></code></td>
+                  <td><%= bl.reason %></td>
+                  <td><%= new Date(bl.created_at * 1000).toLocaleString('fr-FR') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</body>
+</html>
